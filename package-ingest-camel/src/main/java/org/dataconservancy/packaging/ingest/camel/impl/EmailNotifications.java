@@ -32,6 +32,7 @@ public class EmailNotifications
                     .printStackTrace(System.err);
         });
         from(ROUTE_NOTIFICATION_SUCCESS).process(e -> {
+            System.out.println("success!");
         });
 
     }

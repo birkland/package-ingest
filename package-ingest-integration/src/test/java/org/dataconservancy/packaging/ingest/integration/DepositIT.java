@@ -69,7 +69,7 @@ public class DepositIT {
     public void cleanUp() throws Exception {
         svc.close();
         FileUtils.cleanDirectory(new File(PACKAGE_DEPOSIT_DIR));
-        FileUtils.cleanDirectory(new File(PACKAGE_FAIL_DIR));
+        //FileUtils.cleanDirectory(new File(PACKAGE_FAIL_DIR));
     }
 
     /* Verifies that failed packages go into fail older */

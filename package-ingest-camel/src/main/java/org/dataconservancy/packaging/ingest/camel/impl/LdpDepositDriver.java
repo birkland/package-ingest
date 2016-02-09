@@ -33,7 +33,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
-
 /**
  * Deposits package content into an LDP repository.
  * 
@@ -150,6 +149,9 @@ public class LdpDepositDriver
         from("direct:_deposit_ldpResource").id("ldp-deposit-resource")
                 .process(e -> {
                     LdpResource resource = e.getIn().getBody(LdpResource.class);
+                    
+                    System.out.println("Resource media type: " + resource.getMediaType());
+                    System.out.println("Resource URI: " + resource.getURI());
 
                     e.getIn().setHeader(HEADER_RESOURCE_DESCRIPTION,
                                         resource.getDescription());
@@ -351,10 +353,19 @@ public class LdpDepositDriver
     /* Parses the body of the message in an exchange into rdf */
     static void parseRDFBody(StreamRDF sink, Exchange e) {
 
+        String body = "";
+        try {
+            body = IOUtils.toString(e.getIn().getBody(InputStream.class));
+        } catch (Exception x) {
+            throw new RuntimeException(x);
+        }
+
+        System.out.println(e.getIn().getHeader(Exchange.CONTENT_TYPE));
+        System.out.println(e.getIn().getHeader(Exchange.HTTP_URI, String.class));
+        System.out.println(body);
         RDFDataMgr
                 .parse(sink,
-                       new TypedInputStream(e.getIn()
-                               .getBody(InputStream.class),
+                       new TypedInputStream(IOUtils.toInputStream(body),
                                             ContentType.create(e.getIn()
                                                     .getHeader(Exchange.CONTENT_TYPE,
                                                                String.class))),
